@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>동물의 숲 시계 위젯 만들기</title>
+    <title>동물의 숲 시계 위젯</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -22,6 +22,7 @@
             --w-name-bg: #736555;
             --w-name-text: #FDFBF7;
             --w-leaf-bg: #E1EAD8;
+            --w-outline-color: #FFFFFF;
         }
 
         body {
@@ -64,7 +65,7 @@
         #character-img { transition: opacity 0.3s ease-in-out; }
         
         .text-outline {
-            text-shadow: 1px 1px 0px rgba(255,255,255,0.5), -1px -1px 0px rgba(255,255,255,0.5), 1px -1px 0px rgba(255,255,255,0.5), -1px 1px 0px rgba(255,255,255,0.5);
+            text-shadow: 1.5px 1.5px 0px var(--w-outline-color), -1.5px -1.5px 0px var(--w-outline-color), 1.5px -1.5px 0px var(--w-outline-color), -1.5px 1.5px 0px var(--w-outline-color);
         }
 
         /* 커스텀 테마 적용 클래스 */
@@ -114,6 +115,15 @@
                             <!-- JS에서 옵션 렌더링 -->
                         </select>
                         <p class="text-xs text-gray-400 mt-2 ml-1">* '랜덤' 선택 시 1분마다 주민이 바뀝니다.</p>
+                    </div>
+
+                    <!-- 초 표시 선택 -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-600 mb-2">⏱️ 초 표시</label>
+                        <select id="sec-select" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all font-medium appearance-none cursor-pointer">
+                            <option value="true">켜기</option>
+                            <option value="false">끄기</option>
+                        </select>
                     </div>
                 </div>
 
@@ -193,10 +203,6 @@
                 </span>
             </div>
         </div>
-
-        <!-- 우측 장식 나사 -->
-        <div class="absolute top-3 right-3 w-2 h-2 rounded-full theme-screw shadow-inner transition-colors duration-300"></div>
-        <div class="absolute bottom-3 right-3 w-2 h-2 rounded-full theme-screw shadow-inner transition-colors duration-300"></div>
     </div>
     <!-- ========================================== -->
 
@@ -206,19 +212,23 @@
         const themes = {
             'nook': { 
                 name: '너굴 베이지', 
-                vars: { '--w-bg': '#FDFBF7', '--w-dot': '#E8E2D2', '--w-border': '#F2EFE6', '--w-text-main': '#695D4A', '--w-text-sub': '#8EA37C', '--w-text-sec': '#B0A79A', '--w-name-bg': '#736555', '--w-name-text': '#FDFBF7', '--w-leaf-bg': '#E1EAD8' } 
+                vars: { '--w-bg': '#FDFBF7', '--w-dot': '#E8E2D2', '--w-border': '#F2EFE6', '--w-text-main': '#695D4A', '--w-text-sub': '#8EA37C', '--w-text-sec': '#B0A79A', '--w-name-bg': '#736555', '--w-name-text': '#FDFBF7', '--w-leaf-bg': '#E1EAD8', '--w-outline-color': '#FFFFFF' } 
             },
             'cherry': { 
                 name: '벚꽃 핑크', 
-                vars: { '--w-bg': '#FFF5F8', '--w-dot': '#FFE4ED', '--w-border': '#FFD1E0', '--w-text-main': '#D86B93', '--w-text-sub': '#E28EAE', '--w-text-sec': '#F0B6CB', '--w-name-bg': '#E5739E', '--w-name-text': '#FFFFFF', '--w-leaf-bg': '#FFFFFF' } 
+                vars: { '--w-bg': '#FFF5F8', '--w-dot': '#FFE4ED', '--w-border': '#FFD1E0', '--w-text-main': '#D86B93', '--w-text-sub': '#E28EAE', '--w-text-sec': '#F0B6CB', '--w-name-bg': '#E5739E', '--w-name-text': '#FFFFFF', '--w-leaf-bg': '#FFFFFF', '--w-outline-color': '#FFFFFF' } 
             },
             'ocean': { 
                 name: '여름 바다', 
-                vars: { '--w-bg': '#F0F8FF', '--w-dot': '#D6EAF8', '--w-border': '#AED6F1', '--w-text-main': '#21618C', '--w-text-sub': '#2874A6', '--w-text-sec': '#85C1E9', '--w-name-bg': '#2E86C1', '--w-name-text': '#FFFFFF', '--w-leaf-bg': '#EBF5FB' } 
+                vars: { '--w-bg': '#F0F8FF', '--w-dot': '#D6EAF8', '--w-border': '#AED6F1', '--w-text-main': '#21618C', '--w-text-sub': '#2874A6', '--w-text-sec': '#85C1E9', '--w-name-bg': '#2E86C1', '--w-name-text': '#FFFFFF', '--w-leaf-bg': '#EBF5FB', '--w-outline-color': '#FFFFFF' } 
             },
             'night': { 
                 name: '부엉의 밤', 
-                vars: { '--w-bg': '#282C34', '--w-dot': '#3E4451', '--w-border': '#21252B', '--w-text-main': '#E5C07B', '--w-text-sub': '#ABB2BF', '--w-text-sec': '#5C6370', '--w-name-bg': '#E5C07B', '--w-name-text': '#282C34', '--w-leaf-bg': '#3E4451' } 
+                vars: { '--w-bg': '#282C34', '--w-dot': '#3E4451', '--w-border': '#21252B', '--w-text-main': '#E5C07B', '--w-text-sub': '#ABB2BF', '--w-text-sec': '#5C6370', '--w-name-bg': '#E5C07B', '--w-name-text': '#282C34', '--w-leaf-bg': '#3E4451', '--w-outline-color': '#21252B' } 
+            },
+            'forest': {
+                name: '숲속 초록',
+                vars: { '--w-bg': '#F0F9F0', '--w-dot': '#D8EAD8', '--w-border': '#C3E0C3', '--w-text-main': '#2D5A27', '--w-text-sub': '#4A7C44', '--w-text-sec': '#73A56C', '--w-name-bg': '#4A7C44', '--w-name-text': '#FFFFFF', '--w-leaf-bg': '#D5ECD4', '--w-outline-color': '#FFFFFF' }
             }
         };
 
@@ -248,6 +258,7 @@
         // URL 파라미터에서 읽어오기 (없으면 기본값)
         let activeThemeId = urlParams.get('theme') || 'nook';
         let activeCharId = urlParams.get('char') || 'random';
+        let activeShowSec = urlParams.get('showSec') !== 'false'; // 기본값은 true (표시)
         
         const root = document.documentElement;
         const widgetCard = document.getElementById('widget-card');
@@ -306,6 +317,16 @@
             renderCharacter(characters[currentRandomIndex]);
         }
 
+        // 초 표시 적용 로직
+        function applyShowSec() {
+            const secEl = document.getElementById('sec-display');
+            if (activeShowSec) {
+                secEl.style.display = ''; // 기본값으로 복귀
+            } else {
+                secEl.style.display = 'none'; // 숨김
+            }
+        }
+
         // 시계 업데이트
         function updateClock() {
             const now = new Date();
@@ -336,6 +357,7 @@
             
             applyTheme(activeThemeId);
             applyCharacterSelection();
+            applyShowSec();
             
             // 위젯 이미지 에러 처리
             imgEl.addEventListener('error', () => {
@@ -377,11 +399,14 @@
             // 3. 링크 생성 함수
             function generateUrl() {
                 const baseUrl = window.location.href.split('?')[0];
-                const url = `${baseUrl}?widget=true&theme=${activeThemeId}&char=${activeCharId}`;
+                const url = `${baseUrl}?widget=true&theme=${activeThemeId}&char=${activeCharId}&showSec=${activeShowSec}`;
                 document.getElementById('embed-url').value = url;
             }
 
             // 4. 이벤트 리스너 연결
+            const secSelect = document.getElementById('sec-select');
+            secSelect.value = activeShowSec ? "true" : "false";
+
             themeSelect.addEventListener('change', (e) => {
                 activeThemeId = e.target.value;
                 applyTheme(activeThemeId);
@@ -391,6 +416,12 @@
             charSelect.addEventListener('change', (e) => {
                 activeCharId = e.target.value;
                 applyCharacterSelection();
+                generateUrl();
+            });
+
+            secSelect.addEventListener('change', (e) => {
+                activeShowSec = e.target.value === 'true';
+                applyShowSec();
                 generateUrl();
             });
 
@@ -424,6 +455,7 @@
             // 5. 초기 렌더링 세팅
             applyTheme(activeThemeId);
             applyCharacterSelection();
+            applyShowSec();
             generateUrl();
             
             // 위젯 이미지 에러 처리
