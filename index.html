@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>동물의 숲 시계 위젯</title>
+    <title>동물의 숲 시계 위젯 만들기</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -114,7 +114,6 @@
                         <select id="char-select" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all font-medium appearance-none cursor-pointer">
                             <!-- JS에서 옵션 렌더링 -->
                         </select>
-                        <p class="text-xs text-gray-400 mt-2 ml-1">* '랜덤' 선택 시 1분마다 주민이 바뀝니다.</p>
                     </div>
 
                     <!-- 초 표시 선택 -->
@@ -232,23 +231,33 @@
             }
         };
 
+        // 🌟 로컬 이미지(ac_images 폴더) 참조로 변경됨
         const characters = [
-            { id: "random", name: "🎲 랜덤 (1분마다 변경)", url: "" },
-            { id: "tom_nook", name: "너굴", url: "https://dodo.ac/np/images/9/93/Tom_Nook_NH.png" },
-            { id: "isabelle", name: "여울", url: "https://dodo.ac/np/images/b/b5/Isabelle_NH.png" },
-            { id: "kk", name: "T.K.", url: "https://dodo.ac/np/images/9/93/K.K._NH.png" },
-            { id: "raymond", name: "잭슨", url: "https://dodo.ac/np/images/2/2a/Raymond_NH.png" },
-            { id: "marshal", name: "쭈니", url: "https://dodo.ac/np/images/9/97/Marshal_NH.png" },
-            { id: "apple", name: "애플", url: "https://dodo.ac/np/images/5/57/Apple_NH.png" },
-            { id: "lolly", name: "사이다", url: "https://dodo.ac/np/images/1/15/Lolly_NH.png" },
-            { id: "judy", name: "미애", url: "https://dodo.ac/np/images/0/07/Judy_NH.png" },
-            { id: "blathers", name: "부엉", url: "https://dodo.ac/np/images/8/87/Blathers_NH.png" },
-            { id: "celeste", name: "부옥", url: "https://dodo.ac/np/images/f/f6/Celeste_NH.png" },
-            { id: "kicks", name: "패트릭", url: "https://dodo.ac/np/images/4/48/Kicks_NH.png" },
-            { id: "zucker", name: "탁호", url: "https://dodo.ac/np/images/8/86/Zucker_NH.png" },
-            { id: "roald", name: "펭수", url: "https://dodo.ac/np/images/c/c8/Roald_NH.png" },
-            { id: "ankha", name: "클레오", url: "https://dodo.ac/np/images/5/56/Ankha_NH.png" },
-            { id: "rover", name: "낯선고양이", url: "https://dodo.ac/np/images/1/14/Rover_NH.png" }
+            { id: "tom_nook", name: "너굴", url: "./ac_images/tom_nook.webp" },
+            { id: "isabelle", name: "여울", url: "./ac_images/Isabelle.webp" },
+            { id: "kk", name: "T.K.", url: "./ac_images/kk.webp" },
+            { id: "raymond", name: "잭슨", url: "./ac_images/Raymond.webp" },
+            { id: "marshal", name: "쭈니", url: "./ac_images/Marshal.webp" },
+            { id: "apple", name: "애플", url: "./ac_images/Apple.webp" },
+            { id: "lolly", name: "사이다", url: "./ac_images/Lolly.webp" },
+            { id: "judy", name: "미애", url: "./ac_images/judy.webp" },
+            { id: "blathers", name: "부엉", url: "./ac_images/Blathers.webp" },
+            { id: "celeste", name: "부옥", url: "./ac_images/celeste.webp" },
+            { id: "zucker", name: "탁호", url: "./ac_images/Zucker.webp" },
+            { id: "brewster", name: "마스터", url: "./ac_images/Brewster.webp" },
+            { id: "cookie", name: "쿠키", url: "./ac_images/Cookie.webp" },
+            { id: "deli", name: "델리", url: "./ac_images/Deli.webp" },
+            { id: "flurry", name: "뽀야미", url: "./ac_images/Flurry.webp" },
+            { id: "gulliver", name: "죠니", url: "./ac_images/Gulliver.webp" },
+            { id: "joey", name: "리처드", url: "./ac_images/Joey.webp" },
+            { id: "ketchup", name: "케첩", url: "./ac_images/Ketchup.webp" },
+            { id: "molly", name: "귀여미", url: "./ac_images/Molly.webp" },
+            { id: "mr_resetti", name: "도루묵씨", url: "./ac_images/Mr_Resetti.webp" },
+            { id: "pascal", name: "해탈한", url: "./ac_images/Pascal.webp" },
+            { id: "poppy", name: "다람", url: "./ac_images/Poppy.webp" },
+            { id: "sasha", name: "미첼", url: "./ac_images/Sasha.webp" },
+            { id: "stitches", name: "패치", url: "./ac_images/Stitches.webp" },
+            { id: "timmy_tommy", name: "콩돌밤돌", url: "./ac_images/Timmy_and_Tommy.webp" }
         ];
 
         // --- 2. 초기 상태 및 DOM ---
@@ -257,7 +266,7 @@
         
         // URL 파라미터에서 읽어오기 (없으면 기본값)
         let activeThemeId = urlParams.get('theme') || 'nook';
-        let activeCharId = urlParams.get('char') || 'random';
+        let activeCharId = urlParams.get('char') || 'tom_nook';
         let activeShowSec = urlParams.get('showSec') !== 'false'; // 기본값은 true (표시)
         
         const root = document.documentElement;
@@ -291,30 +300,10 @@
 
         // 캐릭터 선택/적용 로직
         function applyCharacterSelection() {
-            if (activeCharId === 'random') {
-                // 랜덤 로직: 초기 1회 변경 후, 매 정각마다 변경은 updateClock에서 처리
-                changeRandomCharacter();
-                document.getElementById('char-click-area').style.cursor = 'pointer';
-            } else {
-                // 특정 캐릭터 고정
-                const targetChar = characters.find(c => c.id === activeCharId) || characters[1];
-                renderCharacter(targetChar);
-                document.getElementById('char-click-area').style.cursor = 'default';
-            }
-        }
-
-        function changeRandomCharacter() {
-            if (activeCharId !== 'random') return; // 랜덤 모드가 아니면 작동 안함
-            
-            let newIndex;
-            // 배열 0번은 '랜덤' 항목이므로 1번부터 끝까지 중에서 고름
-            const realCharsLength = characters.length - 1; 
-            do {
-                newIndex = Math.floor(Math.random() * realCharsLength) + 1;
-            } while (newIndex === currentRandomIndex && realCharsLength > 1);
-            
-            currentRandomIndex = newIndex;
-            renderCharacter(characters[currentRandomIndex]);
+            // 특정 캐릭터 고정
+            const targetChar = characters.find(c => c.id === activeCharId) || characters[0];
+            renderCharacter(targetChar);
+            document.getElementById('char-click-area').style.cursor = 'default';
         }
 
         // 초 표시 적용 로직
@@ -340,11 +329,6 @@
             document.getElementById('time-display').textContent = `${hours}:${minutes}`;
             document.getElementById('sec-display').textContent = seconds;
             document.getElementById('date-display').textContent = dateString;
-
-            // 랜덤 모드일 때 매 분 0초마다 캐릭터 변경
-            if (now.getSeconds() === 0 && activeCharId === 'random') {
-                changeRandomCharacter();
-            }
         }
 
         // --- 4. 초기화 라우팅 (모드 분기) ---
@@ -368,11 +352,6 @@
                 imgEl.classList.remove('hidden');
                 fallbackIcon.classList.add('hidden');
                 imgEl.style.opacity = '1';
-            });
-
-            // 랜덤 모드일 때 위젯 클릭 시 변경
-            document.getElementById('char-click-area').addEventListener('click', () => {
-                if(activeCharId === 'random') changeRandomCharacter();
             });
 
             updateClock();
@@ -467,10 +446,6 @@
                 imgEl.classList.remove('hidden');
                 fallbackIcon.classList.add('hidden');
                 imgEl.style.opacity = '1';
-            });
-            
-            document.getElementById('char-click-area').addEventListener('click', () => {
-                if(activeCharId === 'random') changeRandomCharacter();
             });
 
             updateClock();
