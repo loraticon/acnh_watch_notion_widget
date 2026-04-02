@@ -4,15 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>동물의 숲 시계 위젯 만들기</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
+        /* ... (기존 스타일 코드 동일) ... */
         :root {
-            /* 기본 테마 (너굴 베이지) 변수 */
             --w-bg: #FDFBF7;
             --w-dot: #E8E2D2;
             --w-border: #F2EFE6;
@@ -32,7 +30,6 @@
             background-color: transparent; 
         }
 
-        /* 위젯 전용 스타일 */
         .widget-mode-body {
             display: flex;
             justify-content: center;
@@ -45,7 +42,6 @@
             font-family: 'Nunito', sans-serif;
         }
 
-        /* 동물의 숲 느낌의 도트 패턴 배경 (변수 사용) */
         .ac-bg-pattern {
             background-color: var(--w-bg);
             background-image: radial-gradient(var(--w-dot) 2px, transparent 2px);
@@ -68,7 +64,6 @@
             text-shadow: 1.5px 1.5px 0px var(--w-outline-color), -1.5px -1.5px 0px var(--w-outline-color), 1.5px -1.5px 0px var(--w-outline-color), -1.5px 1.5px 0px var(--w-outline-color);
         }
 
-        /* 커스텀 테마 적용 클래스 */
         .theme-text-main { color: var(--w-text-main); }
         .theme-text-sub { color: var(--w-text-sub); }
         .theme-text-sec { color: var(--w-text-sec); }
@@ -76,7 +71,6 @@
         .theme-leaf-bg { background-color: var(--w-leaf-bg); }
         .theme-screw { background-color: var(--w-border); }
         
-        /* 토스트 메시지 애니메이션 */
         @keyframes fadeOut {
             0% { opacity: 1; transform: translateY(0); }
             80% { opacity: 1; transform: translateY(0); }
@@ -89,34 +83,28 @@
 </head>
 <body id="main-body" class="bg-gray-50 text-gray-800">
 
-    <!-- 생성기 UI (위젯 모드일 땐 숨겨짐) -->
     <div id="generator-ui" class="min-h-screen flex flex-col items-center justify-center p-6">
         
         <div class="bg-white rounded-3xl shadow-xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row border border-gray-100">
             
-            <!-- 왼쪽: 컨트롤 패널 -->
-            <div class="p-8 md:w-1/2 flex flex-col justify-center border-b md:border-b-0 md:border-r border-gray-100 bg-white z-10">
+            <div class="p-8 md:w-1/2 flex flex-col justify-center border-b md:border-b-0 md:border-r border-gray-100 bg-white z-10 relative">
                 <div class="mb-2 inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold tracking-wide">Notion Widget</div>
-                <h1 class="text-3xl font-black text-gray-800 mb-6 tracking-tight">동숲 시계 생성기</h1>
+                <h1 class="text-3xl font-black text-gray-800 mb-1 tracking-tight">동숲 시계 생성기</h1>
+                <p class="text-sm font-medium text-gray-500 mb-6">Made by 로라티콘 (Loraticon)</p>
                 
                 <div class="space-y-6">
-                    <!-- 테마 선택 -->
                     <div>
                         <label class="block text-sm font-bold text-gray-600 mb-2">🎨 컬러 테마</label>
                         <select id="theme-select" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all font-medium appearance-none cursor-pointer">
-                            <!-- JS에서 옵션 렌더링 -->
-                        </select>
+                            </select>
                     </div>
 
-                    <!-- 캐릭터 선택 -->
                     <div>
                         <label class="block text-sm font-bold text-gray-600 mb-2">🐾 주민 선택</label>
                         <select id="char-select" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all font-medium appearance-none cursor-pointer">
-                            <!-- JS에서 옵션 렌더링 -->
-                        </select>
+                            </select>
                     </div>
 
-                    <!-- 초 표시 선택 -->
                     <div>
                         <label class="block text-sm font-bold text-gray-600 mb-2">⏱️ 초 표시</label>
                         <select id="sec-select" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all font-medium appearance-none cursor-pointer">
@@ -126,7 +114,6 @@
                     </div>
                 </div>
 
-                <!-- URL 생성 및 복사 -->
                 <div class="mt-8 pt-6 border-t border-gray-100">
                     <label class="block text-sm font-bold text-gray-600 mb-2">🔗 노션에 임베드할 주소</label>
                     <div class="flex">
@@ -142,35 +129,30 @@
                         2. <b>[임베드]</b>을 클릭하고 사이즈를 조절하세요.
                     </div>
                 </div>
+                
+                <div class="mt-6 text-[10px] text-gray-400 text-center leading-tight">
+                    * 이 위젯은 '모여봐요 동물의 숲'의 팬 메이드 프로젝트이며,<br>어떠한 상업적 목적으로도 이용되지 않습니다.<br>All game assets belong to Nintendo.
+                </div>
             </div>
 
-            <!-- 오른쪽: 미리보기 -->
             <div class="p-8 md:w-1/2 bg-[#F8F9FA] flex flex-col items-center justify-center relative">
                 <div class="absolute top-6 left-6 text-sm font-bold text-gray-400 tracking-widest uppercase">Preview</div>
                 
-                <!-- 미리보기 컨테이너 (여기에 위젯이 위치함) -->
                 <div id="preview-container" class="scale-110 md:scale-125 transition-transform duration-300">
-                    <!-- 위젯 카드가 여기로 이동됨 -->
-                </div>
+                    </div>
             </div>
             
         </div>
     </div>
 
-    <!-- 토스트 메시지 -->
     <div id="toast" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-2xl font-bold text-sm z-50 hidden">
         ✅ 노션 임베드 주소가 복사되었습니다!
     </div>
 
 
-    <!-- ========================================== -->
-    <!-- 위젯 본체 (이 부분만 노션에 보여지게 됨) -->
-    <!-- ========================================== -->
     <div id="widget-card" class="widget-font ac-bg-pattern w-[340px] h-[160px] rounded-[32px] border-4 flex items-center p-4 relative overflow-hidden transition-all duration-300">
         
-        <!-- 왼쪽: 캐릭터 이미지 영역 -->
         <div class="w-[100px] h-[100px] flex-shrink-0 flex justify-center items-center relative z-10 cursor-pointer" id="char-click-area">
-            <!-- 배경 나뭇잎 모양 -->
             <div class="absolute inset-0 theme-leaf-bg rounded-full opacity-70 scale-110 transition-colors duration-300"></div>
             
             <img id="character-img" src="" alt="주민 이미지" class="w-full h-full object-contain animate-float drop-shadow-md relative z-10 opacity-0">
@@ -180,7 +162,6 @@
             </svg>
         </div>
 
-        <!-- 오른쪽: 시간 및 텍스트 영역 -->
         <div class="flex-grow pl-5 flex flex-col justify-center relative z-10 select-none">
             <div class="flex items-center space-x-2 mb-1">
                 <span id="character-name" class="theme-name-bg text-[11px] font-bold px-3 py-1 rounded-full transition-colors duration-300">
@@ -202,9 +183,6 @@
             </div>
         </div>
     </div>
-    <!-- ========================================== -->
-
-
     <script>
         // --- 1. 데이터 정의 ---
         const themes = {
