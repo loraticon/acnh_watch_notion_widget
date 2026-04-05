@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* ... (기존 스타일 코드 동일) ... */
         :root {
             --w-bg: #FDFBF7;
             --w-dot: #E8E2D2;
@@ -29,6 +28,12 @@
             padding: 0;
             background-color: transparent; 
         }
+
+        /* 커스텀 스크롤바 (도감 모달용) */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f8f9fa; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
         .widget-mode-body {
             display: flex;
@@ -96,13 +101,16 @@
                     <div>
                         <label class="block text-sm font-bold text-gray-600 mb-2">🎨 컬러 테마</label>
                         <select id="theme-select" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all font-medium appearance-none cursor-pointer">
-                            </select>
+                        </select>
                     </div>
 
+                    <!-- 드롭다운 대신 도감 모달을 여는 버튼으로 변경 -->
                     <div>
                         <label class="block text-sm font-bold text-gray-600 mb-2">🐾 주민 선택</label>
-                        <select id="char-select" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all font-medium appearance-none cursor-pointer">
-                            </select>
+                        <button id="char-modal-btn" type="button" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all font-bold text-left flex justify-between items-center hover:bg-gray-100">
+                            <span id="selected-char-name">주민을 선택하세요</span>
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
                     </div>
 
                     <div>
@@ -139,12 +147,38 @@
                 <div class="absolute top-6 left-6 text-sm font-bold text-gray-400 tracking-widest uppercase">Preview</div>
                 
                 <div id="preview-container" class="scale-110 md:scale-125 transition-transform duration-300">
-                    </div>
+                </div>
             </div>
             
         </div>
     </div>
 
+    <!-- 🌟 주민 선택 팝업(도감) 모달 🌟 -->
+    <div id="char-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div id="char-modal-content" class="bg-white rounded-[32px] w-full max-w-3xl max-h-[85vh] flex flex-col shadow-2xl transform scale-95 transition-transform duration-300 overflow-hidden">
+            <!-- 모달 헤더 -->
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-[#FDFBF7]">
+                <h2 class="text-xl font-black text-[#695D4A] flex items-center gap-2">
+                    <svg class="w-6 h-6 text-[#8EA37C]" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.5,1.5c-2.4,0-4.7,1-6.3,2.8C9.6,2.5,7.3,1.5,4.9,1.5C2.2,1.5,0,3.7,0,6.4c0,5.6,8.4,14.6,10.6,16.8c0.3,0.3,0.8,0.3,1.1,0C14,21.1,22.4,12.1,22.4,6.4C22.4,3.7,20.2,1.5,17.5,1.5z"></path></svg>
+                    주민 도감
+                </h2>
+                <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 p-2 rounded-full transition-colors outline-none">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <!-- 검색창 -->
+            <div class="p-4 border-b border-gray-100 bg-white z-10 shadow-sm relative">
+                <input type="text" id="char-search" placeholder="찾고 싶은 주민 이름을 검색하세요! (예: 쭈니, 미애)" class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 outline-none focus:ring-2 focus:ring-green-400 transition-all font-medium text-gray-700">
+                <svg class="w-5 h-5 text-gray-400 absolute left-8 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+            <!-- 그리드(얼굴 목록) -->
+            <div id="char-grid" class="p-5 overflow-y-auto flex-grow grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 bg-gray-50">
+                <!-- JS로 자동 렌더링 됨 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 토스트 메시지 -->
     <div id="toast" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-2xl font-bold text-sm z-50 hidden">
         ✅ 노션 임베드 주소가 복사되었습니다!
     </div>
@@ -183,6 +217,7 @@
             </div>
         </div>
     </div>
+    
     <script>
         // --- 1. 데이터 정의 ---
         const themes = {
@@ -208,7 +243,6 @@
             }
         };
 
-        // 🌟 로컬 이미지(ac_images 폴더) 참조로 변경됨
         const characters = [
             { id: "kk", name: "K.K.", url: "./ac_images/kk.webp" },
             { id: "gaston", name: "대길이", url: "./ac_images/Gaston.webp" },
@@ -252,7 +286,7 @@
             { id: "flurry", name: "뽀야미", url: "./ac_images/Flurry.webp" },
             { id: "lolly", name: "사이다", url: "./ac_images/Lolly.webp" },
             { id: "freya", name: "산드라", url: "./ac_images/Freya.webp" },
-            { id: "freya", name: "스트로베리", url: "./ac_images/Merengue.webp" },
+            { id: "merengue", name: "스트로베리", url: "./ac_images/Merengue.webp" }, // name fix
             { id: "ione", name: "스피카", url: "./ac_images/Ione.webp" },
             { id: "fang", name: "시베리아", url: "./ac_images/Fang.webp" },
             { id: "weber", name: "아잠만", url: "./ac_images/Weber.webp" },
@@ -294,14 +328,16 @@
             { id: "billy", name: "힘드러", url: "./ac_images/Billy.webp" }
         ];
 
+        // 🌟 가나다순으로 자동 정렬
+        characters.sort((a, b) => a.name.localeCompare(b.name, 'ko-KR'));
+
         // --- 2. 초기 상태 및 DOM ---
         const urlParams = new URLSearchParams(window.location.search);
         const isWidgetMode = urlParams.get('widget') === 'true';
         
-        // URL 파라미터에서 읽어오기 (없으면 기본값)
         let activeThemeId = urlParams.get('theme') || 'nook';
         let activeCharId = urlParams.get('char') || 'tom_nook';
-        let activeShowSec = urlParams.get('showSec') !== 'false'; // 기본값은 true (표시)
+        let activeShowSec = urlParams.get('showSec') !== 'false';
         
         const root = document.documentElement;
         const widgetCard = document.getElementById('widget-card');
@@ -309,12 +345,10 @@
         const fallbackIcon = document.getElementById('fallback-icon');
         const nameEl = document.getElementById('character-name');
 
-        let currentRandomIndex = -1;
         let clockInterval;
 
         // --- 3. 핵심 함수 ---
         
-        // 테마 적용
         function applyTheme(themeId) {
             const theme = themes[themeId];
             if (!theme) return;
@@ -323,7 +357,6 @@
             }
         }
 
-        // 특정 캐릭터 UI 렌더링
         function renderCharacter(charData) {
             imgEl.style.opacity = '0';
             setTimeout(() => {
@@ -332,25 +365,26 @@
             }, 200);
         }
 
-        // 캐릭터 선택/적용 로직
         function applyCharacterSelection() {
-            // 특정 캐릭터 고정
-            const targetChar = characters.find(c => c.id === activeCharId) || characters[0];
+            const targetChar = characters.find(c => c.id === activeCharId) || characters.find(c=>c.id === 'tom_nook');
             renderCharacter(targetChar);
             document.getElementById('char-click-area').style.cursor = 'default';
-        }
 
-        // 초 표시 적용 로직
-        function applyShowSec() {
-            const secEl = document.getElementById('sec-display');
-            if (activeShowSec) {
-                secEl.style.display = ''; // 기본값으로 복귀
-            } else {
-                secEl.style.display = 'none'; // 숨김
+            // 생성기 모드일 때 버튼 텍스트 업데이트
+            if(!isWidgetMode) {
+                document.getElementById('selected-char-name').textContent = targetChar.name;
             }
         }
 
-        // 시계 업데이트
+        function applyShowSec() {
+            const secEl = document.getElementById('sec-display');
+            if (activeShowSec) {
+                secEl.style.display = '';
+            } else {
+                secEl.style.display = 'none';
+            }
+        }
+
         function updateClock() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -377,7 +411,6 @@
             applyCharacterSelection();
             applyShowSec();
             
-            // 위젯 이미지 에러 처리
             imgEl.addEventListener('error', () => {
                 imgEl.classList.add('hidden');
                 fallbackIcon.classList.remove('hidden');
@@ -393,30 +426,93 @@
 
         } else {
             // [생성기 모드]
-            
-            // 1. 위젯을 미리보기 컨테이너로 이동
             document.getElementById('preview-container').appendChild(widgetCard);
             
-            // 2. 드롭다운 옵션 채우기
+            // 테마 드롭다운 채우기
             const themeSelect = document.getElementById('theme-select');
             Object.keys(themes).forEach(id => {
                 themeSelect.innerHTML += `<option value="${id}">${themes[id].name}</option>`;
             });
 
-            const charSelect = document.getElementById('char-select');
-            characters.forEach(c => {
-                // 랜덤의 경우 실제 이름만 사용하고, url은 무시됨
-                charSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`;
-            });
-
-            // 3. 링크 생성 함수
+            // 링크 생성 함수
             function generateUrl() {
                 const baseUrl = window.location.href.split('?')[0];
                 const url = `${baseUrl}?widget=true&theme=${activeThemeId}&char=${activeCharId}&showSec=${activeShowSec}`;
                 document.getElementById('embed-url').value = url;
             }
 
-            // 4. 이벤트 리스너 연결
+            // --- 🌟 도감 모달 로직 🌟 ---
+            const charModalBtn = document.getElementById('char-modal-btn');
+            const charModal = document.getElementById('char-modal');
+            const charModalContent = document.getElementById('char-modal-content');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const charSearch = document.getElementById('char-search');
+            const charGrid = document.getElementById('char-grid');
+
+            function openModal() {
+                charModal.classList.remove('hidden');
+                // 약간의 딜레이를 주어 transition 적용
+                setTimeout(() => {
+                    charModal.classList.remove('opacity-0');
+                    charModalContent.classList.remove('scale-95');
+                }, 10);
+                charSearch.value = ''; // 열 때마다 검색창 초기화
+                renderGrid(); 
+            }
+
+            function closeModal() {
+                charModal.classList.add('opacity-0');
+                charModalContent.classList.add('scale-95');
+                setTimeout(() => {
+                    charModal.classList.add('hidden');
+                }, 300);
+            }
+
+            // 얼굴 도감 렌더링 함수
+            function renderGrid(searchTerm = '') {
+                charGrid.innerHTML = '';
+                const term = searchTerm.trim().toLowerCase();
+                // 검색어에 맞게 필터링
+                const filtered = characters.filter(c => c.name.toLowerCase().includes(term));
+                
+                if(filtered.length === 0) {
+                    charGrid.innerHTML = `<div class="col-span-full py-10 text-center text-gray-400 font-bold">검색 결과가 없습니다 😢</div>`;
+                    return;
+                }
+
+                filtered.forEach(c => {
+                    const isSelected = (c.id === activeCharId);
+                    const btn = document.createElement('button');
+                    btn.className = `flex flex-col items-center p-3 rounded-2xl outline-none transition-all transform hover:scale-105 ${isSelected ? 'bg-green-100 border-2 border-green-500 shadow-sm' : 'bg-white border border-gray-100 shadow-sm hover:border-green-300'}`;
+                    btn.innerHTML = `
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 mb-2">
+                            <img src="${c.url}" alt="${c.name}" class="w-full h-full object-contain drop-shadow-sm" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' fill=\\'%23d1d5db\\' viewBox=\\'0 0 24 24\\'><path d=\\'M17.5,1.5c-2.4,0-4.7,1-6.3,2.8C9.6,2.5,7.3,1.5,4.9,1.5C2.2,1.5,0,3.7,0,6.4c0,5.6,8.4,14.6,10.6,16.8c0.3,0.3,0.8,0.3,1.1,0C14,21.1,22.4,12.1,22.4,6.4C22.4,3.7,20.2,1.5,17.5,1.5z\\'/></svg>'">
+                        </div>
+                        <span class="text-xs font-bold ${isSelected ? 'text-green-700' : 'text-gray-600'}">${c.name}</span>
+                    `;
+                    // 캐릭터 선택 시 작동
+                    btn.addEventListener('click', () => {
+                        activeCharId = c.id;
+                        applyCharacterSelection();
+                        generateUrl();
+                        closeModal();
+                    });
+                    charGrid.appendChild(btn);
+                });
+            }
+
+            // 모달 이벤트 리스너
+            charModalBtn.addEventListener('click', openModal);
+            closeModalBtn.addEventListener('click', closeModal);
+            charModal.addEventListener('click', (e) => {
+                // 바깥 검은 배경 클릭 시 닫기
+                if (e.target === charModal) closeModal();
+            });
+            charSearch.addEventListener('input', (e) => {
+                renderGrid(e.target.value);
+            });
+
+            // 기타 이벤트 리스너 연결
             const secSelect = document.getElementById('sec-select');
             secSelect.value = activeShowSec ? "true" : "false";
 
@@ -426,23 +522,15 @@
                 generateUrl();
             });
 
-            charSelect.addEventListener('change', (e) => {
-                activeCharId = e.target.value;
-                applyCharacterSelection();
-                generateUrl();
-            });
-
             secSelect.addEventListener('change', (e) => {
                 activeShowSec = e.target.value === 'true';
                 applyShowSec();
                 generateUrl();
             });
 
-            // 복사 버튼 기능
+            // 복사 버튼
             document.getElementById('copy-btn').addEventListener('click', () => {
                 const urlInput = document.getElementById('embed-url');
-                
-                // 임시 텍스트 에어리어를 만들어 복사 (iframe 등 호환성 위해)
                 const textArea = document.createElement("textarea");
                 textArea.value = urlInput.value;
                 document.body.appendChild(textArea);
@@ -460,18 +548,17 @@
                 const toast = document.getElementById('toast');
                 toast.classList.remove('hidden');
                 toast.classList.remove('toast-anim');
-                void toast.offsetWidth; // 트리거 리플로우 (애니메이션 재시작을 위해)
+                void toast.offsetWidth; 
                 toast.classList.add('toast-anim');
                 setTimeout(() => { toast.classList.add('hidden'); }, 2000);
             }
 
-            // 5. 초기 렌더링 세팅
+            // 초기 세팅
             applyTheme(activeThemeId);
             applyCharacterSelection();
             applyShowSec();
             generateUrl();
             
-            // 위젯 이미지 에러 처리
             imgEl.addEventListener('error', () => {
                 imgEl.classList.add('hidden');
                 fallbackIcon.classList.remove('hidden');
