@@ -457,6 +457,9 @@
             document.getElementById('generator-ui').style.display = 'none';
             const body = document.getElementById('main-body');
             body.className = 'widget-mode-body';
+
+            // html 태그에도 투명 클래스 추가
+            document.documentElement.classList.add('widget-mode-html');
             
             applyTheme(activeThemeId);
             applyCharacterSelection();
